@@ -1,695 +1,152 @@
-Tôi sẽ tạo cho bạn một ứng dụng web đo chất lượng ô nhiễm không khí với giao diện hiện đại và đầy đủ chức năng:
+document.addEventListener('DOMContentLoaded', () => {
+    // --- CẤU HÌNH ---
+    // !!! QUAN TRỌNG: Thay thế 'demo' bằng API Token của bạn !!!
+    const API_TOKEN = 'demo'; 
 
-```html
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Đo Chất Lượng Không Khí</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    // --- Lấy các phần tử DOM ---
+    const cityInput = document.getElementById('city-input');
+    const checkBtn = document.getElementById('check-btn');
+    const locationBtn = document.getElementById('location-btn');
+    const loader = document.getElementById('loader');
+    const errorMsg = document.getElementById('error-msg');
+    const aqiCard = document.getElementById('aqi-card');
+    const locationName = document.getElementById('location-name');
+    const aqiValue = document.getElementById('aqi-value');
+    const aqiLevel = document.getElementById('aqi-level');
+    const aqiRecommendation = document.getElementById('aqi-recommendation');
+    const pollutantsDetails = document.getElementById('pollutants-details');
+
+    // --- Gắn sự kiện ---
+    checkBtn.addEventListener('click', () => {
+        const city = cityInput.value.trim();
+        if (city) {
+            getAqiByCity(city);
+        } else {
+            displayError('Vui lòng nhập tên thành phố.');
         }
+    });
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+    cityInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            checkBtn.click();
         }
+    });
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+    locationBtn.addEventListener('click', getAqiByGeoLocation);
+
+    // --- Hàm xử lý ---
+    function showLoading(isLoading) {
+        loader.style.display = isLoading ? 'block' : 'none';
+        if (isLoading) {
+            aqiCard.classList.add('hidden');
+            errorMsg.textContent = '';
         }
+    }
 
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
+    function displayError(message) {
+        errorMsg.textContent = `Lỗi: ${message}`;
+        aqiCard.classList.add('hidden');
+    }
+    
+    function getAqiByCity(city) {
+        const url = `https://api.waqi.info/feed/${city}/?token=${API_TOKEN}`;
+        fetchData(url);
+    }
+
+    function getAqiByGeoLocation() {
+        if ("geolocation" in navigator) {
+            showLoading(true);
+            navigator.geolocation.getCurrentPosition(position => {
+                const { latitude, longitude } = position.coords;
+                const url = `https://api.waqi.info/feed/geo:${latitude};${longitude}/?token=${API_TOKEN}`;
+                fetchData(url);
+            }, error => {
+                showLoading(false);
+                displayError('Không thể lấy vị trí. Vui lòng cấp quyền truy cập vị trí hoặc thử lại.');
+                console.error("Geolocation Error:", error);
+            });
+        } else {
+            displayError("Trình duyệt không hỗ trợ Geolocation.");
         }
+    }
 
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
+    async function fetchData(url) {
+        showLoading(true);
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
 
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        .main-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            margin-bottom: 30px;
-        }
-
-        .location-selector {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .location-selector select, .location-selector button {
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: 2px solid #e0e0e0;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        .location-selector select {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .btn-refresh {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .btn-refresh:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .aqi-display {
-            text-align: center;
-            padding: 40px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .aqi-value {
-            font-size: 5em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .aqi-status {
-            font-size: 1.8em;
-            margin-bottom: 10px;
-        }
-
-        .aqi-description {
-            font-size: 1.1em;
-            opacity: 0.8;
-        }
-
-        /* AQI Color Classes */
-        .aqi-good {
-            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
-            color: white;
-        }
-
-        .aqi-moderate {
-            background: linear-gradient(135deg, #F2994A 0%, #F2C94C 100%);
-            color: white;
-        }
-
-        .aqi-unhealthy-sensitive {
-            background: linear-gradient(135deg, #f2994a 0%, #f27121 100%);
-            color: white;
-        }
-
-        .aqi-unhealthy {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-            color: white;
-        }
-
-        .aqi-very-unhealthy {
-            background: linear-gradient(135deg, #8e44ad 0%, #c0392b 100%);
-            color: white;
-        }
-
-        .aqi-hazardous {
-            background: linear-gradient(135deg, #4b0082 0%, #8b0000 100%);
-            color: white;
-        }
-
-        .pollutants-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .pollutant-card {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .pollutant-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .pollutant-name {
-            font-weight: bold;
-            color: #666;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-
-        .pollutant-value {
-            font-size: 2em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .pollutant-unit {
-            color: #999;
-            font-size: 0.9em;
-        }
-
-        .chart-container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .chart-title {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-            color: #333;
-            text-align: center;
-        }
-
-        .time-chart {
-            display: flex;
-            align-items: flex-end;
-            height: 200px;
-            gap: 10px;
-            padding: 20px 0;
-        }
-
-        .bar {
-            flex: 1;
-            background: linear-gradient(to top, #667eea, #764ba2);
-            border-radius: 5px 5px 0 0;
-            position: relative;
-            min-height: 20px;
-            transition: all 0.3s;
-        }
-
-        .bar:hover {
-            opacity: 0.8;
-        }
-
-        .bar-label {
-            position: absolute;
-            bottom: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.8em;
-            color: #666;
-        }
-
-        .recommendations {
-            margin-top: 30px;
-            padding: 25px;
-            background: #f0f8ff;
-            border-radius: 15px;
-            border-left: 5px solid #667eea;
-        }
-
-        .recommendations h3 {
-            color: #333;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .recommendations ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .recommendations li {
-            padding: 8px 0;
-            padding-left: 25px;
-            position: relative;
-        }
-
-        .recommendations li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        .update-time {
-            text-align: center;
-            color: #666;
-            margin-top: 20px;
-            font-style: italic;
-        }
-
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .legend-color {
-            width: 30px;
-            height: 20px;
-            border-radius: 5px;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8em;
-            }
-            
-            .aqi-value {
-                font-size: 3.5em;
-            }
-            
-            .pollutants-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            }
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>🌍 Hệ Thống Đo Chất Lượng Không Khí</h1>
-            <p>Theo dõi và cập nhật chất lượng không khí theo thời gian thực</p>
-        </div>
-
-        <!-- Main Card -->
-        <div class="main-card">
-            <!-- Location Selector -->
-            <div class="location-selector">
-                <select id="citySelect">
-                    <option value="hanoi">Hà Nội</option>
-                    <option value="hcm">TP. Hồ Chí Minh</option>
-                    <option value="danang">Đà Nẵng</option>
-                    <option value="haiphong">Hải Phòng</option>
-                    <option value="cantho">Cần Thơ</option>
-                </select>
-                <select id="districtSelect">
-                    <option value="district1">Quận 1</option>
-                    <option value="district2">Quận 2</option>
-                    <option value="district3">Quận 3</option>
-                </select>
-                <button class="btn-refresh" onclick="refreshData()">
-                    🔄 Cập Nhật
-                </button>
-            </div>
-
-            <!-- AQI Display -->
-            <div class="aqi-display aqi-moderate" id="aqiDisplay">
-                <div class="aqi-value" id="aqiValue">72</div>
-                <div class="aqi-status" id="aqiStatus">Trung Bình</div>
-                <div class="aqi-description" id="aqiDescription">
-                    Chất lượng không khí chấp nhận được. Tuy nhiên, người nhạy cảm có thể gặp vấn đề sức khỏe nhẹ.
-                </div>
-            </div>
-
-            <!-- Pollutants Grid -->
-            <div class="pollutants-grid">
-                <div class="pollutant-card">
-                    <div class="pollutant-name">PM2.5</div>
-                    <div class="pollutant-value" id="pm25">25.4</div>
-                    <div class="pollutant-unit">μg/m³</div>
-                </div>
-                <div class="pollutant-card">
-                    <div class="pollutant-name">PM10</div>
-                    <div class="pollutant-value" id="pm10">45.2</div>
-                    <div class="pollutant-unit">μg/m³</div>
-                </div>
-                <div class="pollutant-card">
-                    <div class="pollutant-name">O₃</div>
-                    <div class="pollutant-value" id="o3">65.8</div>
-                    <div class="pollutant-unit">μg/m³</div>
-                </div>
-                <div class="pollutant-card">
-                    <div class="pollutant-name">NO₂</div>
-                    <div class="pollutant-value" id="no2">32.1</div>
-                    <div class="pollutant-unit">μg/m³</div>
-                </div>
-                <div class="pollutant-card">
-                    <div class="pollutant-name">SO₂</div>
-                    <div class="pollutant-value" id="so2">15.3</div>
-                    <div class="pollutant-unit">μg/m³</div>
-                </div>
-                <div class="pollutant-card">
-                    <div class="pollutant-name">CO</div>
-                    <div class="pollutant-value" id="co">0.8</div>
-                    <div class="pollutant-unit">mg/m³</div>
-                </div>
-            </div>
-
-            <!-- Recommendations -->
-            <div class="recommendations">
-                <h3>💡 Khuyến Nghị</h3>
-                <ul id="recommendations">
-                    <li>Người nhạy cảm nên hạn chế hoạt động ngoài trời kéo dài</li>
-                    <li>Đóng cửa sổ để tránh không khí ô nhiễm bên ngoài</li>
-                    <li>Sử dụng máy lọc không khí trong nhà</li>
-                    <li>Đeo khẩu trang khi ra ngoài nếu cần thiết</li>
-                </ul>
-            </div>
-
-            <!-- Update Time -->
-            <div class="update-time" id="updateTime">
-                Cập nhật lần cuối: <span id="lastUpdate"></span>
-            </div>
-        </div>
-
-        <!-- Chart Container -->
-        <div class="chart-container">
-            <h2 class="chart-title">Biểu Đồ AQI Theo Giờ (24h)</h2>
-            <div class="time-chart" id="timeChart"></div>
-            
-            <!-- Legend -->
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);"></div>
-                    <span>Tốt (0-50)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #F2994A 0%, #F2C94C 100%);"></div>
-                    <span>Trung bình (51-100)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #f2994a 0%, #f27121 100%);"></div>
-                    <span>Không tốt cho nhóm nhạy cảm (101-150)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);"></div>
-                    <span>Có hại (151-200)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #8e44ad 0%, #c0392b 100%);"></div>
-                    <span>Rất có hại (201-300)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #4b0082 0%, #8b0000 100%);"></div>
-                    <span>Nguy hiểm (301+)</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Simulated data for demonstration
-        let currentAQI = 72;
-        
-        // Generate random hourly data for chart
-        function generateHourlyData() {
-            const data = [];
-            for (let i = 0; i < 24; i++) {
-                data.push(Math.floor(Math.random() * 150) + 30);
-            }
-            return data;
-        }
-
-        // Update AQI display based on value
-        function updateAQIDisplay(aqi) {
-            const aqiDisplay = document.getElementById('aqiDisplay');
-            const aqiValue = document.getElementById('aqiValue');
-            const aqiStatus = document.getElementById('aqiStatus');
-            const aqiDescription = document.getElementById('aqiDescription');
-            const recommendations = document.getElementById('recommendations');
-            
-            aqiValue.textContent = aqi;
-            
-            // Remove all AQI classes
-            aqiDisplay.className = 'aqi-display';
-            
-            if (aqi <= 50) {
-                aqiDisplay.classList.add('aqi-good');
-                aqiStatus.textContent = 'Tốt';
-                aqiDescription.textContent = 'Chất lượng không khí tốt. Không có rủi ro sức khỏe.';
-                recommendations.innerHTML = `
-                    <li>Thích hợp cho mọi hoạt động ngoài trời</li>
-                    <li>Mở cửa sổ để thông gió tự nhiên</li>
-                    <li>Tận hưởng không khí trong lành!</li>
-                `;
-            } else if (aqi <= 100) {
-                aqiDisplay.classList.add('aqi-moderate');
-                aqiStatus.textContent = 'Trung Bình';
-                aqiDescription.textContent = 'Chất lượng không khí chấp nhận được. Người nhạy cảm có thể gặp vấn đề nhẹ.';
-                recommendations.innerHTML = `
-                    <li>Người nhạy cảm nên hạn chế hoạt động ngoài trời kéo dài</li>
-                    <li>Đóng cửa sổ để tránh không khí ô nhiễm bên ngoài</li>
-                    <li>Sử dụng máy lọc không khí trong nhà</li>
-                    <li>Đeo khẩu trang khi ra ngoài nếu cần thiết</li>
-                `;
-            } else if (aqi <= 150) {
-                aqiDisplay.classList.add('aqi-unhealthy-sensitive');
-                aqiStatus.textContent = 'Không Tốt Cho Nhóm Nhạy Cảm';
-                aqiDescription.textContent = 'Người có bệnh hô hấp, tim mạch, trẻ em và người già nên hạn chế ra ngoài.';
-                recommendations.innerHTML = `
-                    <li>Nhóm nhạy cảm nên tránh hoạt động ngoài trời</li>
-                    <li>Giảm hoạt động thể chất mạnh ngoài trời</li>
-                    <li>Đóng kín cửa sổ và sử dụng máy lọc không khí</li>
-                    <li>Đeo khẩu trang N95 khi phải ra ngoài</li>
-                `;
-            } else if (aqi <= 200) {
-                aqiDisplay.classList.add('aqi-unhealthy');
-                aqiStatus.textContent = 'Có Hại Cho Sức Khỏe';
-                aqiDescription.textContent = 'Mọi người có thể bị ảnh hưởng sức khỏe. Nhóm nhạy cảm có thể bị ảnh hưởng nghiêm trọng.';
-                recommendations.innerHTML = `
-                    <li>Tránh hoạt động ngoài trời</li>
-                    <li>Đóng kín cửa và bật máy lọc không khí</li>
-                    <li>Đeo khẩu trang N95 khi cần thiết phải ra ngoài</li>
-                    <li>Theo dõi sức khỏe và đến cơ sở y tế nếu có triệu chứng</li>
-                `;
-            } else if (aqi <= 300) {
-                aqiDisplay.classList.add('aqi-very-unhealthy');
-                aqiStatus.textContent = 'Rất Có Hại';
-                aqiDescription.textContent = 'Cảnh báo sức khỏe khẩn cấp. Toàn bộ dân số có thể bị ảnh hưởng.';
-                recommendations.innerHTML = `
-                    <li>Không ra ngoài trừ trường hợp khẩn cấp</li>
-                    <li>Đóng kín mọi cửa sổ và lỗ thông gió</li>
-                    <li>Sử dụng máy lọc không khí công suất cao</li>
-                    <li>Luôn đeo khẩu trang N95 trong nhà</li>
-                    <li>Chuẩn bị sẵn thuốc và số điện thoại cấp cứu</li>
-                `;
+            if (data.status === 'ok') {
+                displayData(data.data);
             } else {
-                aqiDisplay.classList.add('aqi-hazardous');
-                aqiStatus.textContent = 'Nguy Hiểm';
-                aqiDescription.textContent = 'Tình trạng khẩn cấp về sức khỏe. Mọi người đều bị ảnh hưởng.';
-                recommendations.innerHTML = `
-                    <li>Ở trong nhà và không ra ngoài</li>
-                    <li>Đóng kín hoàn toàn nhà cửa</li>
-                    <li>Sử dụng máy lọc không khí mạnh nhất</li>
-                    <li>Đeo khẩu trang N95 cả trong nhà</li>
-                    <li>Liên hệ y tế ngay nếu có triệu chứng khó thở</li>
-                `;
+                throw new Error(data.data || 'Không tìm thấy thành phố.');
             }
+        } catch (error) {
+            console.error('Fetch Error:', error);
+            displayError(error.message);
+        } finally {
+            showLoading(false);
         }
+    }
 
-        // Generate chart bars
-        function generateChart() {
-            const chartContainer = document.getElementById('timeChart');
-            const data = generateHourlyData();
-            chartContainer.innerHTML = '';
-            
-            data.forEach((value, index) => {
-                const bar = document.createElement('div');
-                bar.className = 'bar';
-                bar.style.height = `${(value / 300) * 100}%`;
-                
-                // Set bar color based on AQI value
-                if (value <= 50) {
-                    bar.style.background = 'linear-gradient(to top, #56ab2f, #a8e063)';
-                } else if (value <= 100) {
-                    bar.style.background = 'linear-gradient(to top, #F2994A, #F2C94C)';
-                } else if (value <= 150) {
-                    bar.style.background = 'linear-gradient(to top, #f2994a, #f27121)';
-                } else if (value <= 200) {
-                    bar.style.background = 'linear-gradient(to top, #eb3349, #f45c43)';
-                } else if (value <= 300) {
-                    bar.style.background = 'linear-gradient(to top, #8e44ad, #c0392b)';
-                } else {
-                    bar.style.background = 'linear-gradient(to top, #4b0082, #8b0000)';
-                }
-                
-                // Add label
-                const label = document.createElement('div');
-                label.className = 'bar-label';
-                label.textContent = `${index}h`;
-                bar.appendChild(label);
-                
-                // Add tooltip
-                bar.title = `${index}:00 - AQI: ${value}`;
-                
-                chartContainer.appendChild(bar);
-            });
-        }
+    function displayData(data) {
+        aqiCard.classList.remove('hidden');
+        errorMsg.textContent = '';
 
-        // Refresh data function
-        function refreshData() {
-            // Show loading state
-            const button = event.target;
-            button.innerHTML = '<span class="loading"></span> Đang cập nhật...';
-            button.disabled = true;
-            
-            // Simulate API call
-            setTimeout(() => {
-                // Generate new random data
-                currentAQI = Math.floor(Math.random() * 200) + 30;
-                
-                // Update AQI
-                updateAQIDisplay(currentAQI);
-                
-                // Update pollutants with random values
-                document.getElementById('pm25').textContent = (Math.random() * 100).toFixed(1);
-                document.getElementById('pm10').textContent = (Math.random() * 150).toFixed(1);
-                document.getElementById('o3').textContent = (Math.random() * 200).toFixed(1);
-                document.getElementById('no2').textContent = (Math.random() * 100).toFixed(1);
-                document.getElementById('so2').textContent = (Math.random() * 50).toFixed(1);
-                document.getElementById('co').textContent = (Math.random() * 2).toFixed(1);
-                
-                // Regenerate chart
-                generateChart();
-                
-                // Update time
-                updateTime();
-                
-                // Reset button
-                button.innerHTML = '🔄 Cập Nhật';
-                button.disabled = false;
-            }, 1500);
-        }
+        const aqi = data.aqi;
+        const { level, className, recommendation } = getAqiInfo(aqi);
 
-        // Update time function
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleString('vi-VN');
-            document.getElementById('lastUpdate').textContent = timeString;
-        }
+        locationName.textContent = data.city.name;
+        aqiValue.textContent = aqi;
+        aqiLevel.textContent = level;
+        aqiRecommendation.textContent = recommendation;
+        
+        // Cập nhật màu nền của thẻ
+        aqiCard.className = 'aqi-card'; // Reset classes
+        aqiCard.classList.add(className);
 
-        // Auto refresh every 5 minutes
-        setInterval(() => {
-            refreshData();
-        }, 300000);
+        // Hiển thị chi tiết các chất ô nhiễm
+        displayPollutants(data.iaqi);
+    }
+    
+    function displayPollutants(iaqi) {
+        pollutantsDetails.innerHTML = ''; // Xóa dữ liệu cũ
+        const pollutantsToShow = ['pm25', 'pm10', 'o3', 'no2', 'so2', 'co'];
 
-        // Initialize on page load
-        window.onload = function() {
-            updateAQIDisplay(currentAQI);
-            generateChart();
-            updateTime();
-        };
+        pollutantsToShow.forEach(pollutantKey => {
+            if (iaqi[pollutantKey] && iaqi[pollutantKey].v !== undefined) {
+                const item = document.createElement('div');
+                item.classList.add('pollutant-item');
 
-        // City change handler
-        document.getElementById('citySelect').addEventListener('change', function() {
-            // Update districts based on city
-            const districts = {
-                'hanoi': ['Quận Ba Đình', 'Quận Hoàn Kiếm', 'Quận Đống Đa', 'Quận Hai Bà Trưng'],
-                'hcm': ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 4'],
-                'danang': ['Quận Hải Châu', 'Quận Thanh Khê', 'Quận Sơn Trà', 'Quận Ngũ Hành Sơn'],
-                'haiphong': ['Quận Hồng Bàng', 'Quận Lê Chân', 'Quận Ngô Quyền', 'Quận Kiến An'],
-                'cantho': ['Quận Ninh Kiều', 'Quận Bình Thủy', 'Quận Cái Răng', 'Quận Ô Môn']
-            };
-            
-            const districtSelect = document.getElementById('districtSelect');
-            districtSelect.innerHTML = '';
-            
-            districts[this.value].forEach(district => {
-                const option = document.createElement('option');
-                option.value = district.toLowerCase().replace(/\s+/g, '');
-                option.textContent = district;
-                districtSelect.appendChild(option);
-            });
-            
-            refreshData();
+                const name = document.createElement('p');
+                name.classList.add('pollutant-name');
+                // Chuyển đổi key thành tên hiển thị đẹp hơn (ví dụ: pm25 -> PM2.5)
+                name.textContent = pollutantKey.replace('pm25', 'PM2.5').replace('pm10', 'PM10').toUpperCase();
+
+                const value = document.createElement('p');
+                value.classList.add('pollutant-value');
+                value.textContent = Math.round(iaqi[pollutantKey].v);
+
+                item.appendChild(name);
+                item.appendChild(value);
+                pollutantsDetails.appendChild(item);
+            }
         });
-    </script>
-</body>
-</html>
-```
+    }
 
-## Tính năng của ứng dụng:
-
-### 1. **Hiển thị chỉ số AQI**
-- Hiển thị giá trị AQI theo thời gian thực
-- Thay đổi màu sắc theo mức độ ô nhiễm
-- Mô tả chi tiết về chất lượng không khí
-
-### 2. **Các chất ô nhiễm được theo dõi**
-- PM2.5, PM10 (Bụi mịn)
-- O₃ (Ozone)
-- NO₂ (Nitrogen Dioxide)
-- SO₂ (Sulfur Dioxide)
-- CO (Carbon Monoxide)
-
-### 3. **Tính năng chính**
-- Chọn địa điểm (Thành phố/Quận)
-- Cập nhật dữ liệu real-time
-- Biểu đồ theo dõi 24h
-- Khuyến nghị sức khỏe tự động
-
-### 4. **Phân loại chất lượng không khí**
-- **Tốt (0-50)**: Màu xanh lá
-- **Trung bình (51-100)**: Màu vàng
-- **Không tốt cho nhóm nhạy cảm (101-150)**: Màu cam
-- **Có hại (151-200)**: Màu đỏ
-- **Rất có hại (201-300)**: Màu tím
-- **Nguy hiểm (301+)**: Màu nâu đỏ
-
-### 5. **Responsive Design**
-- Tương thích với mọi thiết bị
-- Giao diện hiện đại, dễ sử dụng
-- Animation mượt mà
-
-### 6. **Tính năng bổ sung**
-- Auto-refresh mỗi 5 phút
-- Lưu lịch sử đo đạc
-- Cảnh báo khi AQI cao
-
-Bạn có thể tùy chỉnh thêm các tính năng như:
-- Kết nối API thực để lấy dữ liệu
-- Thêm bản đồ
-- Xuất báo cáo
-- Thông báo push
-- So sánh giữa các khu vực
+    function getAqiInfo(aqi) {
+        if (aqi <= 50) {
+            return { level: 'Tốt', className: 'good', recommendation: 'Chất lượng không khí tuyệt vời. Bạn có thể hoạt động ngoài trời bình thường.' };
+        } else if (aqi <= 100) {
+            return { level: 'Trung bình', className: 'moderate', recommendation: 'Chất lượng không khí ở mức chấp nhận được. Người nhạy cảm nên hạn chế hoạt động ngoài trời.' };
+        } else if (aqi <= 150) {
+            return { level: 'Không tốt cho nhóm nhạy cảm', className: 'unhealthy-sensitive', recommendation: 'Người già, trẻ em và người có bệnh hô hấp nên ở trong nhà.' };
+        } else if (aqi <= 200) {
+            return { level: 'Không tốt', className: 'unhealthy', recommendation: 'Mọi người nên hạn chế hoạt động ngoài trời. Người nhạy cảm nên ở trong nhà.' };
+        } else if (aqi <= 300) {
+            return { level: 'Rất không tốt', className: 'very-unhealthy', recommendation: 'Cảnh báo sức khỏe. Mọi người nên tránh các hoạt động ngoài trời.' };
+        } else {
+            return { level: 'Nguy hiểm', className: 'hazardous', recommendation: 'Cảnh báo khẩn cấp về sức khỏe. Mọi người nên ở trong nhà và đóng kín cửa sổ.' };
+        }
+    }
+});
