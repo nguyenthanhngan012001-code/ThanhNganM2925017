@@ -1,152 +1,49 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- CẤU HÌNH ---
-    // !!! QUAN TRỌNG: Thay thế 'demo' bằng API Token của bạn !!!
-    const API_TOKEN = 'demo'; 
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phần Mềm Đo Chất Lượng Không Khí</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Trình Đo Chất Lượng Không Khí</h1>
+            <p>Kiểm tra chỉ số AQI (Air Quality Index) tại khu vực của bạn</p>
+        </header>
 
-    // --- Lấy các phần tử DOM ---
-    const cityInput = document.getElementById('city-input');
-    const checkBtn = document.getElementById('check-btn');
-    const locationBtn = document.getElementById('location-btn');
-    const loader = document.getElementById('loader');
-    const errorMsg = document.getElementById('error-msg');
-    const aqiCard = document.getElementById('aqi-card');
-    const locationName = document.getElementById('location-name');
-    const aqiValue = document.getElementById('aqi-value');
-    const aqiLevel = document.getElementById('aqi-level');
-    const aqiRecommendation = document.getElementById('aqi-recommendation');
-    const pollutantsDetails = document.getElementById('pollutants-details');
+        <div class="input-section">
+            <input type="text" id="city-input" placeholder="Nhập tên thành phố (ví dụ: Hanoi)">
+            <button id="check-btn">Kiểm tra</button>
+            <p class="separator">hoặc</p>
+            <button id="location-btn">Sử dụng vị trí của tôi</button>
+        </div>
 
-    // --- Gắn sự kiện ---
-    checkBtn.addEventListener('click', () => {
-        const city = cityInput.value.trim();
-        if (city) {
-            getAqiByCity(city);
-        } else {
-            displayError('Vui lòng nhập tên thành phố.');
-        }
-    });
+        <div id="result-container" class="result-container">
+            <div class="loader" id="loader"></div>
+            <p id="error-msg" class="error-msg"></p>
+            
+            <div id="aqi-card" class="aqi-card hidden">
+                <h2 id="location-name"></h2>
+                <div class="aqi-main-info">
+                    <p class="aqi-label">Chỉ số AQI</p>
+                    <p class="aqi-value" id="aqi-value"></p>
+                    <p class="aqi-level" id="aqi-level"></p>
+                </div>
+                <p class="aqi-recommendation" id="aqi-recommendation"></p>
+                <div id="pollutants-details" class="pollutants-details"></div>
+            </div>
+        </div>
 
-    cityInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            checkBtn.click();
-        }
-    });
+        <footer>
+            Dữ liệu được cung cấp bởi <a href="https://waqi.info/" target="_blank">WAQI Project</a>.
+        </footer>
+    </div>
 
-    locationBtn.addEventListener('click', getAqiByGeoLocation);
-
-    // --- Hàm xử lý ---
-    function showLoading(isLoading) {
-        loader.style.display = isLoading ? 'block' : 'none';
-        if (isLoading) {
-            aqiCard.classList.add('hidden');
-            errorMsg.textContent = '';
-        }
-    }
-
-    function displayError(message) {
-        errorMsg.textContent = `Lỗi: ${message}`;
-        aqiCard.classList.add('hidden');
-    }
-    
-    function getAqiByCity(city) {
-        const url = `https://api.waqi.info/feed/${city}/?token=${API_TOKEN}`;
-        fetchData(url);
-    }
-
-    function getAqiByGeoLocation() {
-        if ("geolocation" in navigator) {
-            showLoading(true);
-            navigator.geolocation.getCurrentPosition(position => {
-                const { latitude, longitude } = position.coords;
-                const url = `https://api.waqi.info/feed/geo:${latitude};${longitude}/?token=${API_TOKEN}`;
-                fetchData(url);
-            }, error => {
-                showLoading(false);
-                displayError('Không thể lấy vị trí. Vui lòng cấp quyền truy cập vị trí hoặc thử lại.');
-                console.error("Geolocation Error:", error);
-            });
-        } else {
-            displayError("Trình duyệt không hỗ trợ Geolocation.");
-        }
-    }
-
-    async function fetchData(url) {
-        showLoading(true);
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-
-            if (data.status === 'ok') {
-                displayData(data.data);
-            } else {
-                throw new Error(data.data || 'Không tìm thấy thành phố.');
-            }
-        } catch (error) {
-            console.error('Fetch Error:', error);
-            displayError(error.message);
-        } finally {
-            showLoading(false);
-        }
-    }
-
-    function displayData(data) {
-        aqiCard.classList.remove('hidden');
-        errorMsg.textContent = '';
-
-        const aqi = data.aqi;
-        const { level, className, recommendation } = getAqiInfo(aqi);
-
-        locationName.textContent = data.city.name;
-        aqiValue.textContent = aqi;
-        aqiLevel.textContent = level;
-        aqiRecommendation.textContent = recommendation;
-        
-        // Cập nhật màu nền của thẻ
-        aqiCard.className = 'aqi-card'; // Reset classes
-        aqiCard.classList.add(className);
-
-        // Hiển thị chi tiết các chất ô nhiễm
-        displayPollutants(data.iaqi);
-    }
-    
-    function displayPollutants(iaqi) {
-        pollutantsDetails.innerHTML = ''; // Xóa dữ liệu cũ
-        const pollutantsToShow = ['pm25', 'pm10', 'o3', 'no2', 'so2', 'co'];
-
-        pollutantsToShow.forEach(pollutantKey => {
-            if (iaqi[pollutantKey] && iaqi[pollutantKey].v !== undefined) {
-                const item = document.createElement('div');
-                item.classList.add('pollutant-item');
-
-                const name = document.createElement('p');
-                name.classList.add('pollutant-name');
-                // Chuyển đổi key thành tên hiển thị đẹp hơn (ví dụ: pm25 -> PM2.5)
-                name.textContent = pollutantKey.replace('pm25', 'PM2.5').replace('pm10', 'PM10').toUpperCase();
-
-                const value = document.createElement('p');
-                value.classList.add('pollutant-value');
-                value.textContent = Math.round(iaqi[pollutantKey].v);
-
-                item.appendChild(name);
-                item.appendChild(value);
-                pollutantsDetails.appendChild(item);
-            }
-        });
-    }
-
-    function getAqiInfo(aqi) {
-        if (aqi <= 50) {
-            return { level: 'Tốt', className: 'good', recommendation: 'Chất lượng không khí tuyệt vời. Bạn có thể hoạt động ngoài trời bình thường.' };
-        } else if (aqi <= 100) {
-            return { level: 'Trung bình', className: 'moderate', recommendation: 'Chất lượng không khí ở mức chấp nhận được. Người nhạy cảm nên hạn chế hoạt động ngoài trời.' };
-        } else if (aqi <= 150) {
-            return { level: 'Không tốt cho nhóm nhạy cảm', className: 'unhealthy-sensitive', recommendation: 'Người già, trẻ em và người có bệnh hô hấp nên ở trong nhà.' };
-        } else if (aqi <= 200) {
-            return { level: 'Không tốt', className: 'unhealthy', recommendation: 'Mọi người nên hạn chế hoạt động ngoài trời. Người nhạy cảm nên ở trong nhà.' };
-        } else if (aqi <= 300) {
-            return { level: 'Rất không tốt', className: 'very-unhealthy', recommendation: 'Cảnh báo sức khỏe. Mọi người nên tránh các hoạt động ngoài trời.' };
-        } else {
-            return { level: 'Nguy hiểm', className: 'hazardous', recommendation: 'Cảnh báo khẩn cấp về sức khỏe. Mọi người nên ở trong nhà và đóng kín cửa sổ.' };
-        }
-    }
-});
+    <script src="script.js"></script>
+</body>
+</html>
