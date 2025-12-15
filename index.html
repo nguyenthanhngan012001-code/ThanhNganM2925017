@@ -2,11 +2,23 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CV - Nguyễn Thị Thanh Ngân</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-green: #2e7d32;
+            --light-green: #81c784;
+            --soft-green: #e8f5e9;
+            --dark-green: #1b5e20;
+            --accent-green: #4caf50;
+            --text-dark: #263238;
+            --text-light: #546e7a;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(46, 125, 50, 0.15);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,23 +29,24 @@
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
             min-height: 100vh;
-            padding: 30px;
-            line-height: 1.6;
+            padding: 20px;
+            line-height: 1.7;
+            color: var(--text-dark);
         }
 
         .cv-container {
             max-width: 1000px;
             margin: 0 auto;
-            background: #ffffff;
+            background: var(--white);
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(46, 125, 50, 0.15);
+            box-shadow: var(--shadow);
             overflow: hidden;
         }
 
         /* Header Section */
         .header {
-            background: linear-gradient(135deg, #2e7d32 0%, #43a047 50%, #66bb6a 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            color: var(--white);
             padding: 40px;
             position: relative;
             overflow: hidden;
@@ -69,348 +82,406 @@
             z-index: 1;
         }
 
-        .avatar {
+        .avatar-container {
             width: 150px;
             height: 150px;
             border-radius: 50%;
-            border: 5px solid rgba(255, 255, 255, 0.8);
-            background: linear-gradient(135deg, #81c784, #a5d6a7);
+            border: 4px solid var(--light-green);
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--soft-green);
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
             font-size: 60px;
-            color: white;
-            flex-shrink: 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            color: var(--primary-green);
         }
 
-        .header-info h1 {
-            font-family: 'Quicksand', sans-serif;
+        .header-text h1 {
+            font-family: 'Playfair Display', serif;
             font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .header-info .job-title {
+        .header-text .title {
             font-size: 1.2rem;
-            font-weight: 300;
             opacity: 0.95;
             margin-bottom: 15px;
+            font-weight: 300;
         }
 
-        .header-info .company {
-            font-size: 1rem;
-            opacity: 0.9;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .mssv-badge {
+        .cv-label {
+            background: var(--light-green);
+            color: var(--dark-green);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
             display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px 15px;
-            border-radius: 20px;
             font-size: 0.9rem;
-            margin-top: 10px;
-            backdrop-filter: blur(10px);
         }
 
         /* Main Content */
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 2fr;
             gap: 0;
         }
 
-        .left-column {
-            background: #f8fdf8;
+        /* Sidebar */
+        .sidebar {
+            background: var(--soft-green);
             padding: 30px;
-            border-right: 1px solid #e8f5e9;
         }
 
-        .right-column {
-            padding: 30px;
-            background: #ffffff;
-        }
-
-        /* Section Styles */
-        .section {
+        .sidebar-section {
             margin-bottom: 30px;
         }
 
-        .section:last-child {
-            margin-bottom: 0;
-        }
-
-        .section-title {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #2e7d32;
+        .sidebar-section h3 {
+            color: var(--primary-green);
+            font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 3px solid #66bb6a;
+            border-bottom: 2px solid var(--light-green);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .section-title i {
-            font-size: 1.2rem;
-            color: #43a047;
-        }
-
-        /* Contact Info */
         .contact-item {
             display: flex;
             align-items: flex-start;
             gap: 12px;
             margin-bottom: 12px;
             font-size: 0.9rem;
-            color: #424242;
         }
 
         .contact-item i {
-            color: #43a047;
+            color: var(--primary-green);
             width: 20px;
             text-align: center;
             margin-top: 3px;
         }
 
-        /* Objective */
-        .objective-text {
-            font-size: 0.95rem;
-            color: #37474f;
-            text-align: justify;
-            line-height: 1.8;
-            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid #43a047;
+        .contact-item a {
+            color: var(--text-dark);
+            text-decoration: none;
+            word-break: break-all;
         }
 
-        /* Skills & Lists */
-        .skill-list {
-            list-style: none;
+        .contact-item a:hover {
+            color: var(--primary-green);
         }
 
-        .skill-list li {
-            position: relative;
-            padding-left: 25px;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            color: #37474f;
-            line-height: 1.6;
+        .skill-tag {
+            display: inline-block;
+            background: var(--white);
+            color: var(--primary-green);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 3px;
+            border: 1px solid var(--light-green);
         }
 
-        .skill-list li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: #43a047;
-            font-weight: bold;
+        /* Content Area */
+        .content-area {
+            padding: 30px 40px;
         }
 
-        /* Experience Box */
-        .experience-box {
-            background: linear-gradient(135deg, #f1f8e9, #e8f5e9);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
+        .section {
+            margin-bottom: 35px;
         }
 
-        .experience-header {
+        .section-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
-        .experience-position {
-            font-weight: 600;
-            color: #2e7d32;
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.3rem;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .section h2 {
+            color: var(--primary-green);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+        }
+
+        .section-content {
+            padding-left: 65px;
+        }
+
+        .section p {
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        /* Cards */
+        .info-card {
+            background: var(--soft-green);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .info-card h4 {
+            color: var(--primary-green);
+            margin-bottom: 8px;
             font-size: 1rem;
         }
 
-        .experience-time {
-            background: #43a047;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-        }
-
-        .work-content h4 {
-            color: #37474f;
+        .info-card p {
             font-size: 0.95rem;
-            margin-bottom: 10px;
-            margin-top: 15px;
+            margin-bottom: 5px;
         }
 
-        .work-list {
-            list-style: none;
-            margin-left: 15px;
-        }
-
-        .work-list li {
+        /* Experience Timeline */
+        .timeline-item {
             position: relative;
-            padding-left: 20px;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            color: #546e7a;
+            padding-left: 25px;
+            margin-bottom: 20px;
         }
 
-        .work-list li::before {
-            content: '•';
+        .timeline-item::before {
+            content: '';
             position: absolute;
             left: 0;
-            color: #66bb6a;
-            font-size: 1.2rem;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-green);
+            border-radius: 50%;
         }
 
-        /* Document Types */
-        .doc-types {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 10px 0;
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 24px;
+            width: 2px;
+            height: calc(100% - 10px);
+            background: var(--light-green);
         }
 
-        .doc-tag {
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            border: 1px solid #a5d6a7;
+        .timeline-item:last-child::after {
+            display: none;
         }
 
         /* Quote Box */
         .quote-box {
-            background: linear-gradient(135deg, #2e7d32, #43a047);
-            color: white;
-            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            padding: 20px 25px;
             border-radius: 12px;
-            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .quote-box::before {
+            content: '"';
+            font-size: 4rem;
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            opacity: 0.3;
+            font-family: serif;
+        }
+
+        .quote-box p {
+            color: var(--white);
             font-style: italic;
-            margin-top: 15px;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .quote-box i {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            opacity: 0.8;
+        /* Law Links */
+        .law-list {
+            list-style: none;
         }
 
-        /* Legal Knowledge */
         .law-item {
-            background: #ffffff;
-            border: 1px solid #c8e6c9;
-            border-radius: 8px;
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            font-size: 0.88rem;
-            color: #37474f;
+            background: var(--soft-green);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
             transition: all 0.3s ease;
         }
 
         .law-item:hover {
-            border-color: #43a047;
-            box-shadow: 0 3px 10px rgba(67, 160, 71, 0.15);
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.2);
         }
 
-        .law-item strong {
-            color: #2e7d32;
+        .law-item h5 {
+            color: var(--primary-green);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
         }
 
-        /* QCVN Grid */
+        .law-item a {
+            color: var(--accent-green);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .law-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* QCVN Section */
         .qcvn-grid {
             display: grid;
-            gap: 10px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
         }
 
-        .qcvn-item {
-            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
-            padding: 12px 15px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: #37474f;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .qcvn-card {
+            background: var(--white);
+            border: 2px solid var(--light-green);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
         }
 
-        .qcvn-item i {
-            color: #43a047;
+        .qcvn-card:hover {
+            border-color: var(--primary-green);
+            background: var(--soft-green);
         }
 
-        /* Skills Tags */
+        .qcvn-card i {
+            font-size: 2rem;
+            color: var(--primary-green);
+            margin-bottom: 10px;
+        }
+
+        .qcvn-card h5 {
+            color: var(--text-dark);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .qcvn-card a {
+            color: var(--accent-green);
+            font-size: 0.75rem;
+            text-decoration: none;
+        }
+
+        /* Skills Grid */
         .skills-grid {
             display: grid;
-            gap: 10px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
         }
 
-        .skill-item {
-            background: #f8fdf8;
-            border: 1px solid #c8e6c9;
-            border-radius: 8px;
-            padding: 12px 15px;
-            font-size: 0.9rem;
-            color: #37474f;
+        .skill-card {
+            background: var(--soft-green);
+            border-radius: 10px;
+            padding: 15px;
             display: flex;
-            align-items: center;
-            gap: 10px;
+            align-items: flex-start;
+            gap: 12px;
         }
 
-        .skill-item i {
-            color: #43a047;
-            width: 20px;
-            text-align: center;
+        .skill-card i {
+            color: var(--primary-green);
+            font-size: 1.2rem;
+            margin-top: 3px;
         }
 
-        /* Development Section */
-        .development-box {
-            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .development-box p {
-            font-size: 0.95rem;
-            color: #2e7d32;
-            line-height: 1.8;
-        }
-
-        .development-box i {
-            font-size: 2rem;
-            color: #43a047;
-            margin-bottom: 15px;
+        .skill-card p {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            margin: 0;
         }
 
         /* Footer */
         .footer {
-            background: linear-gradient(135deg, #2e7d32, #43a047);
-            color: white;
+            background: var(--dark-green);
+            color: var(--white);
+            padding: 25px 40px;
             text-align: center;
-            padding: 20px;
-            font-size: 0.9rem;
         }
 
-        .footer-icons {
+        .footer h3 {
+            font-family: 'Playfair Display', serif;
             margin-bottom: 10px;
+            font-size: 1.2rem;
         }
 
-        .footer-icons i {
-            font-size: 1.5rem;
-            margin: 0 10px;
-            opacity: 0.8;
+        .footer p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Decorative Elements */
+        .leaf-decoration {
+            color: var(--light-green);
+            opacity: 0.5;
+        }
+
+        /* AI Image Placeholders */
+        .ai-image {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, var(--soft-green), var(--light-green));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .ai-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ai-image-placeholder {
+            text-align: center;
+            color: var(--primary-green);
+        }
+
+        .ai-image-placeholder i {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        .ai-image-placeholder p {
+            font-size: 0.8rem;
+            opacity: 0.7;
         }
 
         /* Responsive */
@@ -424,16 +495,16 @@
                 text-align: center;
             }
 
-            .header-info h1 {
+            .section-content {
+                padding-left: 0;
+            }
+
+            .qcvn-grid, .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-text h1 {
                 font-size: 1.8rem;
-            }
-
-            body {
-                padding: 15px;
-            }
-
-            .left-column, .right-column {
-                padding: 20px;
             }
         }
 
@@ -453,205 +524,397 @@
 <body>
     <div class="cv-container">
         <!-- Header -->
-        <div class="header">
+        <header class="header">
             <div class="header-content">
-                <div class="avatar">
-                    <i class="fas fa-user"></i>
+                <div class="avatar-container">
+                    <!-- Thay thế bằng ảnh thật hoặc ảnh AI -->
+                    <div class="avatar-placeholder">
+                        <i class="fas fa-user"></i>
+                    </div>
                 </div>
-                <div class="header-info">
-                    <h1>NGUYỄN THỊ THANH NGÂN</h1>
-                    <p class="job-title">Nhân viên tư vấn thủ tục – hồ sơ Môi trường</p>
-                    <p class="company">
-                        <i class="fas fa-building"></i>
-                        Công ty TNHH Dịch vụ & Công nghệ Môi trường Tân Tiến
+                <div class="header-text">
+                    <span class="cv-label">📋 CURRICULUM VITAE</span>
+                    <h1>Nguyễn Thị Thanh Ngân</h1>
+                    <p class="title">
+                        <i class="fas fa-leaf"></i> Nhân viên Tư vấn Thủ tục – Hồ sơ Môi trường
                     </p>
-                    <span class="mssv-badge">
-                        <i class="fas fa-id-card"></i> MSSV: M2925017
-                    </span>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <!-- Main Content -->
         <div class="main-content">
-            <!-- Left Column -->
-            <div class="left-column">
-                <!-- Contact Info -->
-                <div class="section">
-                    <h2 class="section-title">
-                        <i class="fas fa-address-card"></i>
-                        Thông tin liên hệ
-                    </h2>
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Thông tin liên hệ -->
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-address-card"></i> Thông tin</h3>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-id-badge"></i>
+                        <div>
+                            <strong>MSSV:</strong><br>
+                            M2925017
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <a href="mailto:nganm2925017@gstudent.ctu.edu.vn">
+                                nganm2925017@gstudent.ctu.edu.vn
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fas fa-building"></i>
+                        <div>
+                            <strong>Đơn vị:</strong><br>
+                            Công ty TNHH Dịch vụ & Công nghệ Môi trường Tân Tiến
+                        </div>
+                    </div>
+
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>Số 17B, Đường số 2, KDC Hồng Phát, Phường An Bình, Thành phố Cần Thơ</span>
+                        <div>
+                            Số 17B, Đường số 2, KDC Hồng Phát, P. An Bình, TP. Cần Thơ
+                        </div>
                     </div>
                 </div>
 
-                <!-- Career Objective -->
-                <div class="section">
-                    <h2 class="section-title">
-                        <i class="fas fa-bullseye"></i>
-                        Mục tiêu nghề nghiệp
-                    </h2>
-                    <p class="objective-text">
-                        Là nhân sự hoạt động trong lĩnh vực môi trường, tôi hướng đến việc tư vấn, xây dựng và hoàn thiện các hồ sơ pháp lý môi trường đúng quy định pháp luật, góp phần hỗ trợ doanh nghiệp phát triển bền vững, tuân thủ Luật Bảo vệ Môi trường và giảm thiểu tác động tiêu cực đến môi trường tự nhiên.
+                <!-- Học vấn -->
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-graduation-cap"></i> Học vấn</h3>
+                    <div class="ai-image">
+                        <div class="ai-image-placeholder">
+                            <i class="fas fa-university"></i>
+                            <p>Đại học Cần Thơ</p>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-dark);">
+                        <strong>Cao học K32</strong><br>
+                        Quản lý Tài nguyên & Môi trường<br>
+                        <em>Đại học Cần Thơ</em>
                     </p>
                 </div>
 
-                <!-- Professional Qualifications -->
-                <div class="section">
-                    <h2 class="section-title">
-                        <i class="fas fa-graduation-cap"></i>
-                        Trình độ chuyên môn
-                    </h2>
-                    <ul class="skill-list">
-                        <li>Am hiểu hệ thống Luật Bảo vệ Môi trường 2020 và các văn bản hướng dẫn thi hành</li>
-                        <li>Nắm vững các Nghị định, Thông tư liên quan đến công tác quản lý môi trường</li>
-                        <li>Có kinh nghiệm thực tế trong việc lập, rà soát và tư vấn các hồ sơ môi trường cho nhiều loại hình dự án</li>
-                    </ul>
+                <!-- Kỹ năng chính -->
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-star"></i> Chuyên môn</h3>
+                    <span class="skill-tag">Luật BVMT 2020</span>
+                    <span class="skill-tag">Nghị định</span>
+                    <span class="skill-tag">Thông tư</span>
+                    <span class="skill-tag">GPMT</span>
+                    <span class="skill-tag">ĐTM</span>
+                    <span class="skill-tag">CTBVMT</span>
+                    <span class="skill-tag">QCVN</span>
+                    <span class="skill-tag">Tư vấn</span>
                 </div>
 
-                <!-- Skills -->
-                <div class="section">
-                    <h2 class="section-title">
-                        <i class="fas fa-cogs"></i>
-                        Kỹ năng
-                    </h2>
-                    <div class="skills-grid">
-                        <div class="skill-item">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Kỹ năng phân tích, tổng hợp và lập hồ sơ pháp lý môi trường</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-comments"></i>
-                            <span>Kỹ năng tư vấn và làm việc với khách hàng, doanh nghiệp</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-handshake"></i>
-                            <span>Kỹ năng làm việc với cơ quan quản lý nhà nước</span>
-                        </div>
-                        <div class="skill-item">
-                            <i class="fas fa-sync-alt"></i>
-                            <span>Khả năng cập nhật nhanh các quy định pháp luật mới</span>
-                        </div>
+                <!-- Kinh nghiệm -->
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-briefcase"></i> Kinh nghiệm</h3>
+                    <div style="text-align: center; padding: 15px; background: var(--white); border-radius: 10px;">
+                        <div style="font-size: 2.5rem; color: var(--primary-green); font-weight: bold;">03</div>
+                        <div style="font-size: 0.9rem; color: var(--text-light);">Năm kinh nghiệm</div>
                     </div>
                 </div>
+            </aside>
 
-                <!-- QCVN Knowledge -->
-                <div class="section">
-                    <h2 class="section-title">
-                        <i class="fas fa-clipboard-check"></i>
-                        Hiểu biết về QCVN
-                    </h2>
-                    <div class="qcvn-grid">
-                        <div class="qcvn-item">
-                            <i class="fas fa-tint"></i>
-                            <span>QCVN về nước thải sinh hoạt</span>
+            <!-- Main Content Area -->
+            <main class="content-area">
+                <!-- Mục tiêu nghề nghiệp -->
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-bullseye"></i>
                         </div>
-                        <div class="qcvn-item">
-                            <i class="fas fa-industry"></i>
-                            <span>QCVN về nước thải công nghiệp (sản xuất, chế biến, dịch vụ)</span>
-                        </div>
-                        <div class="qcvn-item">
-                            <i class="fas fa-smog"></i>
-                            <span>QCVN liên quan đến khí thải, chất thải rắn, chất thải nguy hại</span>
-                        </div>
-                        <div class="qcvn-item">
-                            <i class="fas fa-tasks"></i>
-                            <span>Áp dụng các quy chuẩn môi trường phù hợp với từng loại hình dự án</span>
-                        </div>
+                        <h2>Mục tiêu Nghề nghiệp</h2>
                     </div>
-                </div>
-            </div>
-
-            <!-- Right Column -->
-            <div class="right-column">
-                <!-- Work Experience -->
-                <div class="section">
-                    <h2 class="section-title">
-                        <i class="fas fa-briefcase"></i>
-                        Kinh nghiệm công tác
-                    </h2>
-                    <div class="experience-box">
-                        <div class="experience-header">
-                            <span class="experience-position">Nhân viên tư vấn thủ tục – hồ sơ môi trường</span>
-                            <span class="experience-time"><i class="fas fa-clock"></i> 03 năm kinh nghiệm</span>
-                        </div>
-                        
-                        <div class="work-content">
-                            <h4><i class="fas fa-tasks"></i> Nội dung công việc chính:</h4>
-                            <p style="font-size: 0.9rem; color: #37474f; margin-bottom: 10px;">
-                                Tư vấn, lập và hoàn thiện các hồ sơ môi trường theo quy định hiện hành:
-                            </p>
-                            <div class="doc-types">
-                                <span class="doc-tag"><i class="fas fa-file-alt"></i> GPMT</span>
-                                <span class="doc-tag"><i class="fas fa-file-contract"></i> ĐTM</span>
-                                <span class="doc-tag"><i class="fas fa-file-signature"></i> CTBVMT</span>
+                    <div class="section-content">
+                        <div class="ai-image">
+                            <div class="ai-image-placeholder">
+                                <i class="fas fa-seedling"></i>
+                                <p>Phát triển bền vững</p>
                             </div>
-                            
-                            <ul class="work-list">
-                                <li>Hướng dẫn doanh nghiệp thực hiện các thủ tục pháp lý môi trường từ giai đoạn chuẩn bị dự án đến khi vận hành</li>
-                                <li>Làm việc với cơ quan quản lý nhà nước về môi trường trong quá trình thẩm định và phê duyệt hồ sơ</li>
-                                <li>Theo dõi, cập nhật các quy định pháp luật mới về môi trường để kịp thời áp dụng trong công tác tư vấn</li>
+                        </div>
+                        <p>
+                            Là nhân sự hoạt động trong lĩnh vực môi trường, tôi hướng đến việc <strong>tư vấn, xây dựng và hoàn thiện các hồ sơ pháp lý môi trường</strong> đúng quy định pháp luật, góp phần hỗ trợ doanh nghiệp phát triển bền vững, tuân thủ Luật Bảo vệ Môi trường và giảm thiểu tác động tiêu cực đến môi trường tự nhiên.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Trình độ đào tạo -->
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <h2>Trình độ – Quá trình Đào tạo</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-card">
+                            <h4><i class="fas fa-university"></i> Đại học Cần Thơ</h4>
+                            <p><strong>Chuyên ngành:</strong> Quản lý Tài nguyên & Môi trường – Khóa K32</p>
+                            <p>Được đào tạo chuyên sâu về quản lý tài nguyên thiên nhiên, bảo vệ môi trường, phát triển bền vững và chính sách môi trường.</p>
+                        </div>
+
+                        <h4 style="color: var(--primary-green); margin: 20px 0 15px;">
+                            <i class="fas fa-award"></i> Kiến thức chuyên môn nổi bật:
+                        </h4>
+                        <div class="timeline-item">
+                            <p>Am hiểu hệ thống <strong>Luật Bảo vệ Môi trường 2020</strong> và các văn bản hướng dẫn thi hành.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <p>Nắm vững các <strong>Nghị định, Thông tư</strong> liên quan đến công tác quản lý môi trường.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <p>Có kinh nghiệm thực tế trong việc <strong>lập, rà soát và tư vấn</strong> các hồ sơ môi trường cho nhiều loại hình dự án.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Kinh nghiệm công tác -->
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h2>Kinh nghiệm Công tác</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="ai-image">
+                            <div class="ai-image-placeholder">
+                                <i class="fas fa-file-contract"></i>
+                                <p>Tư vấn hồ sơ môi trường</p>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h4><i class="fas fa-user-tie"></i> Nhân viên Tư vấn Thủ tục – Hồ sơ Môi trường</h4>
+                            <p><strong>Thời gian:</strong> 03 năm kinh nghiệm</p>
+                        </div>
+
+                        <h4 style="color: var(--primary-green); margin: 20px 0 15px;">
+                            <i class="fas fa-tasks"></i> Nội dung công việc chính:
+                        </h4>
+
+                        <div class="timeline-item">
+                            <p><strong>Tư vấn, lập và hoàn thiện các hồ sơ môi trường:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 8px; color: var(--text-light);">
+                                <li>Giấy phép môi trường (GPMT)</li>
+                                <li>Báo cáo đánh giá tác động môi trường (ĐTM)</li>
+                                <li>Kế hoạch/Báo cáo công tác bảo vệ môi trường (CTBVMT)</li>
                             </ul>
+                        </div>
+                        <div class="timeline-item">
+                            <p>Hướng dẫn doanh nghiệp thực hiện các thủ tục pháp lý môi trường từ giai đoạn chuẩn bị dự án đến khi vận hành.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <p>Làm việc với cơ quan quản lý nhà nước về môi trường trong quá trình thẩm định và phê duyệt hồ sơ.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <p>Theo dõi, cập nhật các quy định pháp luật mới về môi trường để kịp thời áp dụng trong công tác tư vấn.</p>
                         </div>
 
                         <div class="quote-box">
-                            <i class="fas fa-quote-left"></i>
-                            <p>"Chính xác – Tuân thủ pháp luật – Đồng hành cùng doanh nghiệp phát triển bền vững"</p>
+                            <p><strong>"Chính xác – Tuân thủ pháp luật – Đồng hành cùng doanh nghiệp phát triển bền vững."</strong></p>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <!-- Legal Knowledge -->
-                <div class="section">
-                    <h2 class="section-title">
-                        <i class="fas fa-balance-scale"></i>
-                        Kiến thức pháp luật môi trường
-                    </h2>
-                    <div class="law-item">
-                        <strong><i class="fas fa-gavel"></i> Luật Bảo vệ Môi trường năm 2020</strong>
+                <!-- Kiến thức pháp luật -->
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <h2>Kiến thức Pháp luật Môi trường</h2>
                     </div>
-                    <div class="law-item">
-                        <strong>Nghị định 05/2025/NĐ-CP</strong> (sửa đổi, bổ sung Nghị định 08/2022/NĐ-CP) quy định chi tiết một số điều của Luật BVMT
+                    <div class="section-content">
+                        <ul class="law-list">
+                            <li class="law-item">
+                                <h5><i class="fas fa-gavel"></i> Luật Bảo vệ Môi trường năm 2020</h5>
+                                <a href="https://thuvienphapluat.vn/van-ban/Tai-nguyen-Moi-truong/Luat-Bao-ve-moi-truong-2020-435695.aspx" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i> Xem văn bản
+                                </a>
+                            </li>
+                            <li class="law-item">
+                                <h5><i class="fas fa-file-alt"></i> Nghị định 08/2022/NĐ-CP</h5>
+                                <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px;">Quy định chi tiết thi hành một số điều của Luật BVMT</p>
+                                <a href="https://thuvienphapluat.vn/van-ban/Tai-nguyen-Moi-truong/Nghi-dinh-08-2022-ND-CP-huong-dan-Luat-Bao-ve-moi-truong-505582.aspx" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i> Xem văn bản
+                                </a>
+                            </li>
+                            <li class="law-item">
+                                <h5><i class="fas fa-file-alt"></i> Nghị định 05/2025/NĐ-CP</h5>
+                                <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px;">Sửa đổi, bổ sung Nghị định 08/2022/NĐ-CP</p>
+                                <a href="https://thuvienphapluat.vn/van-ban/Tai-nguyen-Moi-truong/Nghi-dinh-05-2025-ND-CP-sua-doi-Nghi-dinh-08-2022-ND-CP-596389.aspx" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i> Xem văn bản
+                                </a>
+                            </li>
+                            <li class="law-item">
+                                <h5><i class="fas fa-file-alt"></i> Thông tư 02/2022/TT-BTNMT</h5>
+                                <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px;">Quy định chi tiết thi hành Luật BVMT</p>
+                                <a href="https://thuvienphapluat.vn/van-ban/Tai-nguyen-Moi-truong/Thong-tu-02-2022-TT-BTNMT-huong-dan-Luat-Bao-ve-moi-truong-505624.aspx" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i> Xem văn bản
+                                </a>
+                            </li>
+                            <li class="law-item">
+                                <h5><i class="fas fa-file-alt"></i> Thông tư 07/2025/TT-BTNMT</h5>
+                                <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px;">Sửa đổi, bổ sung Thông tư 02/2022/TT-BTNMT</p>
+                                <a href="https://thuvienphapluat.vn/van-ban/Tai-nguyen-Moi-truong/Thong-tu-07-2025-TT-BTNMT-sua-doi-Thong-tu-02-2022-TT-BTNMT-596420.aspx" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i> Xem văn bản
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="law-item">
-                        <strong>Nghị định 08/2022/NĐ-CP</strong> về hướng dẫn thi hành Luật Bảo vệ Môi trường
-                    </div>
-                    <div class="law-item">
-                        <strong>Thông tư 07/2025/TT-BTNMT</strong> (sửa đổi, bổ sung TT 02/2022) quy định chi tiết về hồ sơ, biểu mẫu môi trường
-                    </div>
-                    <div class="law-item">
-                        <strong>Thông tư 02/2022/TT-BTNMT</strong> quy định chi tiết thi hành một số điều của Luật BVMT
-                    </div>
-                </div>
+                </section>
 
-                <!-- Career Development -->
-                <div class="section">
-                    <h2 class="section-title">
-                        <i class="fas fa-rocket"></i>
-                        Định hướng phát triển
-                    </h2>
-                    <div class="development-box">
-                        <i class="fas fa-seedling"></i>
-                        <p>
-                            Tiếp tục nâng cao chuyên môn trong lĩnh vực tư vấn môi trường, cập nhật sâu rộng các quy định pháp luật mới, hướng đến trở thành <strong>chuyên viên tư vấn môi trường chuyên nghiệp, uy tín</strong> và có giá trị lâu dài cho doanh nghiệp và xã hội.
-                        </p>
+                <!-- QCVN -->
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <h2>Quy chuẩn Kỹ thuật (QCVN)</h2>
                     </div>
-                </div>
-            </div>
+                    <div class="section-content">
+                        <div class="qcvn-grid">
+                            <div class="qcvn-card">
+                                <i class="fas fa-home"></i>
+                                <h5>QCVN 14:2008/BTNMT</h5>
+                                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Nước thải sinh hoạt</p>
+                                <a href="https://thuvienphapluat.vn/van-ban/Tai-nguyen-Moi-truong/QCVN-14-2008-BTNMT-nuoc-thai-sinh-hoat-84442.aspx" target="_blank">
+                                    <i class="fas fa-link"></i> Tra cứu
+                                </a>
+                            </div>
+                            <div class="qcvn-card">
+                                <i class="fas fa-industry"></i>
+                                <h5>QCVN 40:2011/BTNMT</h5>
+                                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Nước thải công nghiệp</p>
+                                <a href="https://thuvienphapluat.vn/van-ban/Tai-nguyen-Moi-truong/QCVN-40-2011-BTNMT-nuoc-thai-cong-nghiep-127915.aspx" target="_blank">
+                                    <i class="fas fa-link"></i> Tra cứu
+                                </a>
+                            </div>
+                            <div class="qcvn-card">
+                                <i class="fas fa-smog"></i>
+                                <h5>QCVN Khí thải</h5>
+                                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Theo loại hình sản xuất</p>
+                                <span style="color: var(--text-light); font-size: 0.75rem;">Áp dụng theo dự án</span>
+                            </div>
+                            <div class="qcvn-card">
+                                <i class="fas fa-trash-alt"></i>
+                                <h5>QCVN Chất thải</h5>
+                                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">Rắn & Nguy hại</p>
+                                <span style="color: var(--text-light); font-size: 0.75rem;">Áp dụng theo dự án</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Kỹ năng số -->
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h2>Kỹ năng – Năng lực Số</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="ai-image">
+                            <div class="ai-image-placeholder">
+                                <i class="fas fa-digital-tachograph"></i>
+                                <p>Năng lực số</p>
+                            </div>
+                        </div>
+                        <div class="skills-grid">
+                            <div class="skill-card">
+                                <i class="fas fa-search"></i>
+                                <p>Tra cứu, khai thác và dẫn nguồn văn bản pháp luật môi trường trên Thư viện Pháp luật, Cổng thông tin Bộ TN&MT</p>
+                            </div>
+                            <div class="skill-card">
+                                <i class="fas fa-file-word"></i>
+                                <p>Soạn thảo hồ sơ môi trường trên nền tảng số (Word, PDF), quản lý dữ liệu hồ sơ khoa học</p>
+                            </div>
+                            <div class="skill-card">
+                                <i class="fas fa-globe"></i>
+                                <p>Ứng dụng CNTT trong học tập và công việc: tìm kiếm tài liệu, cập nhật chính sách môi trường mới</p>
+                            </div>
+                            <div class="skill-card">
+                                <i class="fas fa-chart-line"></i>
+                                <p>Kỹ năng phân tích, tổng hợp thông tin pháp lý phục vụ học tập cao học và tư vấn thực tế</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Định hướng phát triển -->
+                <section class="section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h2>Định hướng Phát triển</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="ai-image">
+                            <div class="ai-image-placeholder">
+                                <i class="fas fa-arrow-up"></i>
+                                <p>Hướng tới tương lai</p>
+                            </div>
+                        </div>
+                        <div class="info-card" style="background: linear-gradient(135deg, var(--soft-green), #c8e6c9);">
+                            <p style="color: var(--text-dark); font-size: 1rem; line-height: 1.8;">
+                                Tiếp tục <strong>nâng cao chuyên môn</strong> trong lĩnh vực tư vấn môi trường, cập nhật sâu rộng các quy định pháp luật mới, hướng đến trở thành <strong>chuyên viên tư vấn môi trường chuyên nghiệp, uy tín</strong> và có giá trị lâu dài cho doanh nghiệp và xã hội.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </main>
         </div>
 
         <!-- Footer -->
-        <div class="footer">
-            <div class="footer-icons">
-                <i class="fas fa-leaf"></i>
-                <i class="fas fa-recycle"></i>
-                <i class="fas fa-globe-asia"></i>
-            </div>
-            <p>Bảo vệ môi trường - Phát triển bền vững</p>
-        </div>
+        <footer class="footer">
+            <h3><i class="fas fa-leaf"></i> Đồng hành cùng Doanh nghiệp Phát triển Bền vững <i class="fas fa-leaf"></i></h3>
+            <p>
+                © 2025 - Nguyễn Thị Thanh Ngân | Cao học K32 - Quản lý Tài nguyên & Môi trường | Đại học Cần Thơ
+            </p>
+        </footer>
     </div>
+
+    <script>
+        // Hiệu ứng scroll mượt
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Hiệu ứng fade-in khi scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.6s ease-out';
+            observer.observe(section);
+        });
+    </script>
 </body>
 </html>
