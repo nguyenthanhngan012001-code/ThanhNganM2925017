@@ -1488,29 +1488,46 @@
 </head>
 <body>
 
-    <h2>CV_NGUYEN THI THANH NGAN</h2>
+ <button id="btnCV">Xem CV</button>
 
+<div id="cvBox">
     <iframe 
         src="CV_NGUYEN THI THANH NGAN.pdf"
         width="100%"
         height="700"
-        style="border:1px solid #ccc; border-radius:8px;">
+        style="border:1px solid #ccc;">
     </iframe>
+</div>
 
-    <br><br>
+<style>
+#btnCV {
+    padding: 12px 24px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
 
-    <a href="CV.pdf" download style="
-        padding:12px 24px;
-        background:#2563eb;
-        color:white;
-        text-decoration:none;
-        border-radius:8px;
-        font-weight:600;
-    ">
-        Tải CV PDF
-    </a>
+#btnCV:hover {
+    background: #1e40af;
+}
 
-</body>
+#cvBox {
+    margin-top: 20px;
+    display: none;   /* Ẩn CV ban đầu */
+}
+</style>
+
+<script>
+document.getElementById("btnCV").onclick = function () {
+    const box = document.getElementById("cvBox");
+    box.style.display = box.style.display === "none" ? "block" : "none";
+};
+</script>
+
 
 
 
